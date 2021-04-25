@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "969778889528",
+    "project_id": "medsched-11d99",
+    "storage_bucket": "medsched-11d99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969778889528:android:ea92accd75a3d1422bb7cd",
+        "android_client_info": {
+          "package_name": "by.kirill.uskov.medsched"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "969778889528-l89n6rkqntospg5jd825m8s6dmh3uc0c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAubUmzZqHa2oZ13crlT_LV0CuW9lGQk2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "969778889528-l89n6rkqntospg5jd825m8s6dmh3uc0c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

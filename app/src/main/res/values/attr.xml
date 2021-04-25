@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="dt">
+        <attr name="mainTextColor" format="color"/>
+        <attr name="secondTextColor" format="color"/>
+        <attr name="toolbarTextColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ic">
+        <attr name="iconColor" format="color"/>
+        <attr name="selectedColor" format="color"/>
+        <attr name="unSelectedColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CalendarView">
+        <attr name="dateFormat" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="common">
+        <attr name="colorOnDialogBackground" format="color"/>
+    </declare-styleable>
+
+</resources>

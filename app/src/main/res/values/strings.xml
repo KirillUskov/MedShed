@@ -1,0 +1,27 @@
+<resources>
+    <!-- Common -->
+    <string name="app_name">MD</string>
+
+    <!-- Patients -->
+    <string name="patients_header">Пациенты</string>
+
+    <!-- New patient -->
+    <string name="p_new">Данные пациента</string>
+    <string name="p_name">ФИО</string>
+    <string name="p_phone_number">+7(___)___-__-__</string>
+    <string name="p_bd_date">__.__.____</string>
+    <string name="p_comments">Комментарий</string>
+
+    <!-- Today patients -->
+    <string name="expiredAppointments">Прошедшие записи</string>
+
+    <!-- Calendar -->
+    <string name="calendar_header">Расписание на месяц</string>
+    <string name="today_header">Расписание на сегодня</string>
+
+    <!-- Menu -->
+    <string name="menu_stat">Статистика</string>
+    <string name="menu_about_us">О нас</string>
+    <string name="menu_procedure">Процедуры</string>
+    <string name="menu_themes">Темная тема</string>
+</resources>

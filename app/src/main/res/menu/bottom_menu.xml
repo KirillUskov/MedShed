@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/currentDaySchedule"
+        android:title="Сегодня"
+        android:icon="@drawable/ic_baseline_done_all"/>
+    <item
+        android:id="@+id/calendarSchedule"
+        android:title="Календарь"
+        android:icon="@drawable/ic_baseline_calendar_today"/>
+    <item
+        android:id="@+id/patientsActivity"
+        android:title="Пациенты"
+        android:icon="@drawable/ic_baseline_people"/>
+</menu>
