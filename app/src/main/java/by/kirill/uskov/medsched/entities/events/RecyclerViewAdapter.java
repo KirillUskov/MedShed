@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import by.kirill.uskov.medsched.R;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private Context context;
@@ -93,9 +94,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             switch (event.getStatus()) {
                 case DO:
                     statusIcon.setImageResource(R.drawable.ic_done);
-                    if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                    if (ThemeUtil.getInstance().isDarkTheme()) {
                         appointmentPatient.setTextColor(Color.parseColor("#737373"));
                         appointmentProcedure.setTextColor(Color.parseColor("#FF5C5C5C"));
+                        appointmentStartTime.setTextColor(Color.parseColor("#5C5C5C"));
+                        appointmentEndTime.setTextColor(Color.parseColor("#4C4C4C"));
                     } else {
                         appointmentPatient.setTextColor(Color.parseColor("#B8B8B8"));
                         appointmentProcedure.setTextColor(Color.parseColor("#D8D8D8"));
@@ -112,8 +115,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     theme.resolveAttribute(R.attr.secondTextColor, typedValue, true);
                     @ColorInt int secondTextColor = typedValue.data;
                     appointmentProcedure.setTextColor(secondTextColor);
-                    appointmentStartTime.setTextColor(Color.parseColor("#5C5C5C"));
-                    appointmentEndTime.setTextColor(Color.parseColor("#B8B8B8"));
+                    appointmentStartTime.setTextColor(mainTextColor);
+                    theme.resolveAttribute(R.attr.thirdTextColor, typedValue, true);
+                    @ColorInt int thirdTextColor = typedValue.data;
+                    appointmentEndTime.setTextColor(thirdTextColor);
                     statusIcon.setImageResource(R.drawable.ic_round);
                     break;
             }

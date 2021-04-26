@@ -189,36 +189,40 @@ public class CustomCalendarView extends LinearLayout {
     }
 
     private void setAppointmentsToMonth() {
-        databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+        try {
+            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (appointments.size() > 0) {
-                    appointments.clear();
-                }
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Event event = ds.getValue(Event.class);
-                    event.setId(ds.getKey());
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (appointments.size() > 0) {
+                        appointments.clear();
+                    }
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Event event = ds.getValue(Event.class);
+                        event.setId(ds.getKey());
 
-                    date = eventDateFormat.format(globalCurrentDateText);
-                    String eventDate = event.getDate().replaceAll(" ", "");
-                    if (date != null) {
-                        if (eventDate.contains(date)) {
-                            appointments.add(event);
+                        date = eventDateFormat.format(globalCurrentDateText);
+                        String eventDate = event.getDate().replaceAll(" ", "");
+                        if (date != null) {
+                            if (eventDate.contains(date)) {
+                                appointments.add(event);
+                            }
                         }
                     }
+                    Collections.sort(appointments);
+                    gridAdapter.setEvents(appointments);
+                    gridAdapter.notifyDataSetChanged();
                 }
-                Collections.sort(appointments);
-                gridAdapter.setEvents(appointments);
-                gridAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e(TAG, error.getMessage());
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.e(TAG, error.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override

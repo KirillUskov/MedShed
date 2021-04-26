@@ -5,5 +5,5 @@
         android:color="@color/green_500"></item>
     <item
         android:state_selected="false"
-        android:color="@color/grey_200"></item>
+        android:color="?attr/thirdTextColor"></item>
 </selector>

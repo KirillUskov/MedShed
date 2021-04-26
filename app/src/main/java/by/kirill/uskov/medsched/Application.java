@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.fragment.app.FragmentManager;
 
 public class Application {
+    public static final String PREFS_PATH = "prefs.txt";
     private static Application application;
     private Context context;
     private FragmentManager fragmentManager;

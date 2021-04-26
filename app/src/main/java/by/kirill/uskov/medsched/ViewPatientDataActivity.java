@@ -31,6 +31,7 @@ import by.kirill.uskov.medsched.models.Application;
 import by.kirill.uskov.medsched.models.CurrentUserModel;
 import by.kirill.uskov.medsched.models.PatientEvent;
 import by.kirill.uskov.medsched.utils.DBUtils;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class ViewPatientDataActivity extends AppCompatActivity {
     private static final String TAG = "ViewPatientDataActivity";
@@ -61,6 +62,9 @@ public class ViewPatientDataActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.activity_view_patient_data);
 
         patientName = findViewById(R.id.patient_name_edit_text);

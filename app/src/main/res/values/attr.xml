@@ -5,6 +5,7 @@
         <attr name="mainTextColor" format="color"/>
         <attr name="secondTextColor" format="color"/>
         <attr name="toolbarTextColor" format="color"/>
+        <attr name="thirdTextColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="ic">

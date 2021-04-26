@@ -39,6 +39,7 @@ import by.kirill.uskov.medsched.models.Application;
 import by.kirill.uskov.medsched.models.CurrentUserModel;
 import by.kirill.uskov.medsched.utils.DBUtils;
 import by.kirill.uskov.medsched.utils.DateUtil;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class TodayActivity extends AppCompatActivity {
 
@@ -66,10 +67,17 @@ public class TodayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.activity_today);
 
         dbUtil = new DBUtils(getApplicationContext());
-        dbEvents = dbUtil.getE();
+        try {
+            dbEvents = dbUtil.getE();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
 
         appointmentAmount = findViewById(R.id.appointmentAmount);
         futureAppointmentsRV = findViewById(R.id.todaySchedule);
@@ -78,7 +86,7 @@ public class TodayActivity extends AppCompatActivity {
 
         if (Application.getInstance().getTodayAppointments().size() > 0) {
             appointments = Application.getInstance().getTodayAppointments();
-        } else {
+        } else if (dbEvents != null) {
             appointments = dbEvents.getList();
         }
 
@@ -130,43 +138,47 @@ public class TodayActivity extends AppCompatActivity {
     }
 
     private void setAppointments() {
-        databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+        try {
+            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (appointments.size() > 0) {
-                    appointments.clear();
-                }
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Event event = ds.getValue(Event.class);
-                    event.setId(ds.getKey());
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-                    Date date = new Date(System.currentTimeMillis());
-
-                    if (event.getDate().replaceAll(" ", "").contains(formatter.format(date))) {
-                        // If today appointment has "MOVE" status (it was moved on today), we set status "NO"
-                        if (event.getStatus() == AppointmentStatus.MOVE) {
-                            event.setStatus(AppointmentStatus.NO.toString());
-                            updateEvent(event);
-                        }
-                        appointments.add(event);
-                        swipeAdapter.notifyDataSetChanged();
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (appointments.size() > 0) {
+                        appointments.clear();
                     }
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Event event = ds.getValue(Event.class);
+                        event.setId(ds.getKey());
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+                        Date date = new Date(System.currentTimeMillis());
+
+                        if (event.getDate().replaceAll(" ", "").contains(formatter.format(date))) {
+                            // If today appointment has "MOVE" status (it was moved on today), we set status "NO"
+                            if (event.getStatus() == AppointmentStatus.MOVE) {
+                                event.setStatus(AppointmentStatus.NO.toString());
+                                updateEvent(event);
+                            }
+                            appointments.add(event);
+                            swipeAdapter.notifyDataSetChanged();
+                        }
+                    }
+                    Collections.sort(appointments);
+
+                    //TEST
+                    swipeAdapter.setEvents(appointments);
+                    setAppointmentsAmount();
+                    swipeAdapter.notifyDataSetChanged();
                 }
-                Collections.sort(appointments);
 
-                //TEST
-                swipeAdapter.setEvents(appointments);
-                setAppointmentsAmount();
-                swipeAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e(TAG, error.getMessage());
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.e(TAG, error.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override
@@ -277,4 +289,9 @@ public class TodayActivity extends AppCompatActivity {
     }
 
 
+    public void goToTheSettings(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
+        overridePendingTransition(0,0);
+        finish();
+    }
 }

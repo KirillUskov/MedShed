@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_settings"
                 android:layout_marginEnd="20dp"
+                android:onClick="goToTheSettings"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -118,7 +119,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:itemIconTint="@drawable/selector"
         app:itemTextColor="@drawable/selector_text"
-        android:background="?android:attr/colorBackground"
+        android:background="?attr/colorOnBackground"
         app:menu="@menu/bottom_menu"
         app:labelVisibilityMode="labeled"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

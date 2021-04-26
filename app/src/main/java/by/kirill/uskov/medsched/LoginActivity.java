@@ -28,6 +28,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
+import by.kirill.uskov.medsched.utils.ThemeUtil;
+
 public class LoginActivity extends AppCompatActivity {
     private Button signInButton;
     private static final int RC_SIGN_IN = 200;
@@ -44,6 +46,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ThemeUtil.getInstance().setSTheme(0);
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.activity_login);
 
         signInButton = findViewById(R.id.signInButton);

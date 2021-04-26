@@ -35,6 +35,7 @@ import by.kirill.uskov.medsched.models.IntermediateEvent;
 import by.kirill.uskov.medsched.models.Time;
 import by.kirill.uskov.medsched.utils.DBUtils;
 import by.kirill.uskov.medsched.utils.DateUtil;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class SelectTimeActivity extends AppCompatActivity {
     private static final String TAG = "SelectTimeDialog";
@@ -60,6 +61,9 @@ public class SelectTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.select_time_layout);
 
         timeRV = findViewById(R.id.free_time_rv);

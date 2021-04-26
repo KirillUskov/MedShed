@@ -18,6 +18,7 @@ import java.util.List;
 
 import by.kirill.uskov.medsched.R;
 import by.kirill.uskov.medsched.entities.events.Event;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class CalendarGridAdapter extends ArrayAdapter {
 
@@ -58,7 +59,9 @@ public class CalendarGridAdapter extends ArrayAdapter {
 
         TextView eventNum = view.findViewById(R.id.events_id);
         if (displayMonth != currentMonth || displayYear != currentYear) {
-            dayNumber.setTextColor(getContext().getResources().getColor(R.color.light_grey));
+            if(!ThemeUtil.getInstance().isDarkTheme()) {
+                dayNumber.setTextColor(getContext().getResources().getColor(R.color.light_grey));
+            }
             dayNumber.setText(String.valueOf(dayNo));
             eventNum.setVisibility(View.INVISIBLE);
         } else {
@@ -80,7 +83,9 @@ public class CalendarGridAdapter extends ArrayAdapter {
                     }
                 }
                 //
-
+                if(ThemeUtil.getInstance().isDarkTheme()) {
+                    dayNumber.setTextColor(getContext().getResources().getColor(R.color.light_grey));
+                }
                 eventNum.setVisibility(View.VISIBLE);
                 eventNum.setText(String.valueOf(eventNumber));
                 //

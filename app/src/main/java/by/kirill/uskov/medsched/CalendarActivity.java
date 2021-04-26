@@ -30,6 +30,7 @@ import by.kirill.uskov.medsched.entities.events.Event;
 import by.kirill.uskov.medsched.models.CalendarEvent;
 import by.kirill.uskov.medsched.models.CurrentUserModel;
 import by.kirill.uskov.medsched.models.IntermediateEvent;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -55,6 +56,9 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.activity_calendar);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         customCalendarView = findViewById(R.id.custom_calendar_view);
@@ -108,39 +112,42 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void setAppointmentsToMonth() {
-        databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+        try {
+            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (appointments.size() > 0) {
-                    appointments.clear();
-                }
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Event event = ds.getValue(Event.class);
-                    event.setId(ds.getKey());
-                    String eventDate = event.getDate().replaceAll(" ", "");
-                    String date = by.kirill.uskov.medsched.models.Application.getInstance().getSelectedDate();
-                    if (date != null) {
-                        if (eventDate.contains(date)) {
-                            appointments.add(CalendarEvent.copyFrom(event));
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (appointments.size() > 0) {
+                        appointments.clear();
+                    }
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Event event = ds.getValue(Event.class);
+                        event.setId(ds.getKey());
+                        String eventDate = event.getDate().replaceAll(" ", "");
+                        String date = by.kirill.uskov.medsched.models.Application.getInstance().getSelectedDate();
+                        if (date != null) {
+                            if (eventDate.contains(date)) {
+                                appointments.add(CalendarEvent.copyFrom(event));
+                            }
+                            Collections.sort(appointments);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            return;
                         }
-                        Collections.sort(appointments);
-                        adapter.notifyDataSetChanged();
                     }
-                    else {
-                        return;
-                    }
+                    Collections.sort(appointments);
+                    adapter.notifyDataSetChanged();
                 }
-                Collections.sort(appointments);
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e(TAG, error.getMessage());
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.e(TAG, error.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
 

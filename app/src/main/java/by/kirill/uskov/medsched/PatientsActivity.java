@@ -33,8 +33,10 @@ import by.kirill.uskov.medsched.entities.patients.SwipeRecyclerViewAdapter;
 import by.kirill.uskov.medsched.models.Application;
 import by.kirill.uskov.medsched.models.CurrentUserModel;
 import by.kirill.uskov.medsched.utils.DBUtils;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class PatientsActivity extends AppCompatActivity {
+    private static final String TAG = "PatientsActivity";
 
     private DBUtils dbUtil;
     private DBUtils.DBPatient dbPatient;
@@ -55,12 +57,20 @@ public class PatientsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.activity_patients);
 
         dbUtil = new DBUtils(getApplicationContext());
 
-        dbPatient = dbUtil.getP();
-        patients = dbPatient.getList();
+        patients = new ArrayList<>();
+        try {
+            dbPatient = dbUtil.getP();
+            patients = dbPatient.getList();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         patientsRV = findViewById(R.id.patientsList);
@@ -133,29 +143,34 @@ public class PatientsActivity extends AppCompatActivity {
     }*/
 
     private void getAllPatients() {
-        databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Pat");
+        try {
+            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Pat");
 
-        ValueEventListener vListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (patients.size() > 0) {
-                    patients.clear();
+            ValueEventListener vListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (patients.size() > 0) {
+                        patients.clear();
+                    }
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Patient patient = ds.getValue(Patient.class);
+                        assert patient != null;
+                        patient.setId(ds.getKey());
+                        patients.add(patient);
+                        Collections.sort(patients);
+                        swipeAdapter.notifyDataSetChanged();
+                    }
                 }
-                for(DataSnapshot ds: snapshot.getChildren()) {
-                    Patient patient = ds.getValue(Patient.class);
-                    assert patient != null;
-                    patient.setId(ds.getKey());
-                    patients.add(patient);
-                    Collections.sort(patients);
-                    swipeAdapter.notifyDataSetChanged();
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        };
-        databaseReference.addValueEventListener(vListener);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            databaseReference.addValueEventListener(vListener);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     private void removePatient(Patient patient) {

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorOnBackground"
     tools:context=".CalendarActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -66,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:itemIconTint="@drawable/selector"
         app:itemTextColor="@drawable/selector_text"
-        android:background="?android:attr/colorBackground"
+        android:background="?attr/colorOnBackground"
         app:menu="@menu/bottom_menu"
         app:labelVisibilityMode="labeled"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

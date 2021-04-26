@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="by.kirill.uskov.medsched">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -17,7 +18,6 @@
             android:name=".SelectTimeActivity"
             android:excludeFromRecents="true"
             android:noHistory="true">
-            >
         </activity>
         <activity android:name=".PatientsActivity" />
         <activity android:name=".CalendarActivity" />

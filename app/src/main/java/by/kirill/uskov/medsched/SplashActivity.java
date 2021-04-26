@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +34,8 @@ import by.kirill.uskov.medsched.models.Application;
 import by.kirill.uskov.medsched.models.CurrentUserModel;
 import by.kirill.uskov.medsched.models.IntermediateEvent;
 import by.kirill.uskov.medsched.utils.DBUtils;
+import by.kirill.uskov.medsched.utils.FileUtil;
+import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG = "SplashActivity";
@@ -53,9 +56,21 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String path = by.kirill.uskov.medsched.Application.PREFS_PATH;
+
+        int mode = 0;
+        try {
+            mode = Integer.parseInt(new FileUtil(path).read(openFileInput(path)));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        ThemeUtil.getInstance().setSTheme(mode);
+
+        ThemeUtil.getInstance().onActivityCreateSetTheme(this);
+
         setContentView(R.layout.activity_splash);
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         exitFromSplash = false;
         if (openNextActivities()) {
         } else {
@@ -114,36 +129,40 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void setAppointments() {
-        databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+        try {
+            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (appointments.size() > 0) {
-                    appointments.clear();
-                }
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Event event = ds.getValue(Event.class);
-                    event.setId(ds.getKey());
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-                    Date date = new Date(System.currentTimeMillis());
-
-                    if (event.getDate().replaceAll(" ", "").contains(formatter.format(date))) {
-                        // If today appointment has "MOVE" status (it was moved on today), we set status "NO"
-                        if (event.getStatus() == AppointmentStatus.MOVE) {
-                            event.setStatus(AppointmentStatus.NO.toString());
-                        }
-                        appointments.add(event);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (appointments.size() > 0) {
+                        appointments.clear();
                     }
-                }
-                Collections.sort(appointments);
-            }
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Event event = ds.getValue(Event.class);
+                        event.setId(ds.getKey());
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+                        Date date = new Date(System.currentTimeMillis());
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.e(TAG, error.getMessage());
-            }
-        });
+                        if (event.getDate().replaceAll(" ", "").contains(formatter.format(date))) {
+                            // If today appointment has "MOVE" status (it was moved on today), we set status "NO"
+                            if (event.getStatus() == AppointmentStatus.MOVE) {
+                                event.setStatus(AppointmentStatus.NO.toString());
+                            }
+                            appointments.add(event);
+                        }
+                    }
+                    Collections.sort(appointments);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.e(TAG, error.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     private boolean isNetworkConnected() {
