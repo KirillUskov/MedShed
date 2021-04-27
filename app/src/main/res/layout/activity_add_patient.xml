@@ -84,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/bg_custom_white"
+                android:textColor="@color/black"
                 android:text="Отмена" />
 
             <Button
