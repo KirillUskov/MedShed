@@ -91,6 +91,11 @@ public class IntermediateEvent {
         return startTime;
     }
 
+    public void clearTime() {
+        startTime = "";
+        endTime = "";
+    }
+
     public void setIntermediateEventNull() {
         intermediateEvent = null;
     }

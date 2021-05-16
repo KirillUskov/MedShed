@@ -9,142 +9,178 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"
         android:orientation="vertical"
-        android:layout_margin="10dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Новая запись"
-            android:textSize="20sp"
-            android:textColor="@color/green_700"
+            android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:layout_marginBottom="20dp"/>
+            android:text="Новая запись"
+            android:textColor="?toolbarTextColor"
+            android:textSize="20sp" />
 
         <AutoCompleteTextView
             android:id="@+id/autoCompleteName"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:padding="10dp"
             android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_custom_white"
             android:hint="ФИО"
-            android:textColorHint="?attr/secondTextColor"
-            android:textColor="?attr/mainTextColor"
-            android:background="@drawable/bg_custom_white" />
+            android:padding="10dp"
+            android:textColor="?lightTextColor"
+            android:textColorHint="?attr/secondTextColor" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/procedure"
             android:layout_width="match_parent"
-            android:padding="10dp"
-            android:layout_marginBottom="5dp"
             android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/bg_custom_white"
             android:hint="Процедура"
-            android:textColorHint="?attr/secondTextColor"
-            android:textColor="?attr/mainTextColor"
-            android:background="@drawable/bg_custom_white" />
+            android:padding="10dp"
+            android:textColor="?lightTextColor"
+            android:textColorHint="?attr/secondTextColor" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Дата и время"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:textSize="16sp"
-            android:textColor="@color/green_700"/>
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp">
+            android:text="Дата и время"
+            android:textColor="?selectedColor"
+            android:textSize="16sp" />
 
-            <EditText
-                android:id="@+id/editTextDate"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/bg_custom_white"
-                android:gravity="center"
-                android:hint="__.__.__"
-                android:inputType="date"
-                android:textColor="?attr/mainTextColor"
-                android:textColorHint="?attr/secondTextColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/editTextStartTime"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/bg_custom_white"
-                android:gravity="center"
-                android:hint="__:__"
-                android:inputType="time"
-                android:textColor="?attr/mainTextColor"
-                android:textColorHint="?attr/secondTextColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/editTextDate"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/divider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="15dp"
-                android:text="–"
-                android:textColor="?attr/mainTextColor"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/editTextEndTime"
-                app:layout_constraintStart_toEndOf="@+id/editTextStartTime"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/editTextEndTime"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/bg_custom_white"
-                android:gravity="center"
-                android:hint="__:__"
-                android:inputType="time"
-                android:textColor="?attr/mainTextColor"
-                android:textColorHint="?attr/secondTextColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/divider"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="right">
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/calendar_picker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_calendar_picker"
+                app:layout_constraintStart_toEndOf="@id/editTextDate"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/time_picker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_time_picker"
+                app:layout_constraintStart_toEndOf="@id/editTextEndTime"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/editTextDate"
+                    android:layout_width="105dp"
+                    android:layout_height="46dp"
+                    android:gravity="center"
+                    android:text="__.__.__"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/editTextStartTime"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="__:__"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="–"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/editTextEndTime"
+                    app:layout_constraintStart_toEndOf="@+id/editTextStartTime"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/editTextEndTime"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="__:__"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/divider"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/cancelButton"
-                android:layout_margin="10dp"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Отмена"
-                android:background="@drawable/bg_custom_white"/>
+                android:layout_margin="10dp"
+                android:background="@drawable/bg_custom_white"
+                android:textColor="?lightTextColor"
+                android:text="Отмена" />
 
             <Button
                 android:id="@+id/addButton"
-                android:layout_margin="10dp"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:text="Добавить"
+                android:layout_margin="10dp"
                 android:background="@drawable/bg_custom_green_button"
-                android:textColor="@color/white"/>
+                android:text="Добавить"
+                android:textColor="?darkTextColor" />
         </LinearLayout>
     </LinearLayout>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,13 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MedSched.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+    <style name="Theme.MedSched.Dark" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/dark_grey</item>
         <item name="colorPrimaryVariant">@color/dark_grey</item>
         <item name="colorOnPrimary">@color/dark_grey</item>
 
         <item name="colorOnBackground">@color/dark_grey</item>
-        <item name="colorOnDialogBackground">@color/grey_900</item>
+        <item name="colorOnDialogBackground">@color/dark_grey_2</item>
+        <item name="colorOnItemsBackground">@color/dark_grey_2</item>
+        <item name="strokeColor">@color/green_700</item>
+        <item name="inputColor">@color/grey_700</item>
+
+        <item name="darkTextColor">@color/dark_grey</item>
+        <item name="lightTextColor">@color/light_grey</item>
 
         <item name="mainTextColor">@color/grey_200</item>
         <item name="secondTextColor">@color/grey_500</item>
@@ -23,7 +28,11 @@
         <item name="selectedColor">@color/green_500</item>
         <item name="unSelectedColor">?attr/mainTextColor</item>
 
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorOnDialogBackground</item>
+
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out</item>
     </style>
 </resources>

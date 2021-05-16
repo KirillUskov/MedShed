@@ -40,6 +40,8 @@ import by.kirill.uskov.medsched.utils.ThemeUtil;
 public class SelectTimeActivity extends AppCompatActivity {
     private static final String TAG = "SelectTimeDialog";
 
+    private DBUtils dbUtil;
+
     private RecyclerView timeRV;
     private Button setButton;
 
@@ -64,6 +66,8 @@ public class SelectTimeActivity extends AppCompatActivity {
 
         ThemeUtil.getInstance().onActivityCreateSetTheme(this);
 
+        dbUtil = new DBUtils();
+
         setContentView(R.layout.select_time_layout);
 
         timeRV = findViewById(R.id.free_time_rv);
@@ -82,7 +86,7 @@ public class SelectTimeActivity extends AppCompatActivity {
             freeTime.add(new Time(t, false));
         }
 
-        adapter = new SelectTimeAdapter(Application.getInstance().getContext(), freeTime);
+        adapter = new SelectTimeAdapter(this, freeTime);
         timeRV.setAdapter(adapter);
         adapter.setFreeTime(freeTime);
 
@@ -138,14 +142,20 @@ public class SelectTimeActivity extends AppCompatActivity {
                     }
 
                     if (!isProblem) {
+                        Log.i(TAG,selectedTime.get(0).getStartTime() );
+                        Log.i(TAG,selectedTime.get(selectedTime.size() - 1).getEndTime());
+                        IntermediateEvent.getInstance().clearTime();
                         IntermediateEvent.getInstance()
                                 .setStartTime(selectedTime.get(0).getStartTime())
                                 .setEndTime(selectedTime.get(selectedTime.size() - 1).getEndTime());
+                        String start = IntermediateEvent.getInstance().getStartTime();
+                        String end = IntermediateEvent.getInstance().getEndTime();
+
                         handler.removeCallbacks(runnable);
                         finish();
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "Выбирите последовательные даты!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Выбраны не последовательные временные промежутки!", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -153,7 +163,7 @@ public class SelectTimeActivity extends AppCompatActivity {
     }
 
     private void setList() {
-        databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+        databaseReference = FirebaseDatabase.getInstance().getReference(dbUtil.getUserSchedCode());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

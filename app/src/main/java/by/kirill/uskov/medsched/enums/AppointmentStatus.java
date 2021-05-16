@@ -1,18 +1,26 @@
 package by.kirill.uskov.medsched.enums;
 
 public enum AppointmentStatus {
-    DO(1),
-    CANCEL(3),
-    MOVE(2),
-    NO(0);
+    DO(1, "Завершен"),
+    CANCEL(3, "Отменен"),
+    MOVE(2, "Перенесен"),
+    NO(0, "Предстоит");
 
     private int weigh;
+    private String name;
 
-    AppointmentStatus(int weigh) {
+    AppointmentStatus(int weigh, String name) {
         this.weigh = weigh;
+        this.name = name;
     }
 
     public int getWeigh() {
         return weigh;
     }
+
+    public String getName() {
+        return name;
+    }
+
+
 }

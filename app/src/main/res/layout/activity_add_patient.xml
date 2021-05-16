@@ -22,7 +22,7 @@
             android:layout_marginBottom="20dp"
             android:gravity="center"
             android:text="Новый пациент"
-            android:textColor="@color/green_700"
+            android:textColor="?toolbarTextColor"
             android:textSize="20sp" />
 
         <EditText
@@ -33,7 +33,7 @@
             android:background="@drawable/bg_custom_white"
             android:hint="@string/p_name"
             android:padding="5dp"
-            android:textColor="@color/dark_grey"
+            android:textColor="?lightTextColor"
             android:textColorHint="?attr/secondTextColor" />
 
 
@@ -46,29 +46,49 @@
             android:hint="@string/p_phone_number"
             android:inputType="phone"
             android:padding="5dp"
-            android:textColor="@color/dark_grey"
+            android:textColor="?lightTextColor"
             android:textColorHint="?attr/secondTextColor" />
-
-        <EditText
-            android:id="@+id/patientBDDate"
+        <LinearLayout
+            android:id="@+id/patient_bd_date_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/bg_custom_white"
-            android:hint="@string/p_bd_date"
-            android:inputType="date"
-            android:padding="5dp"
-            android:textColor="@color/dark_grey"
-            android:textColorHint="?attr/secondTextColor" />
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/patientBDDate"
+                android:layout_width="105dp"
+                android:layout_height="46dp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:text="__.__.__"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                android:layout_weight="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/calendar_picker"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_calendar_picker"
+                app:layout_constraintStart_toEndOf="@id/editTextDate"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/patientComment"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/bg_custom_white"
             android:hint="@string/p_comments"
             android:padding="5dp"
-            android:textColor="@color/dark_grey"
+            android:textColor="?lightTextColor"
             android:textColorHint="?attr/secondTextColor" />
 
         <LinearLayout
@@ -84,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/bg_custom_white"
-                android:textColor="@color/black"
+                android:textColor="?lightTextColor"
                 android:text="Отмена" />
 
             <Button
@@ -94,7 +114,7 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/bg_custom_green_button"
                 android:text="Добавить"
-                android:textColor="@color/white" />
+                android:textColor="?darkTextColor" />
         </LinearLayout>
 
     </LinearLayout>

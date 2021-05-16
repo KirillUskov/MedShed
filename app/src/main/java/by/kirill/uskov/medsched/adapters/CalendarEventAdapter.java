@@ -45,6 +45,11 @@ public class CalendarEventAdapter extends RecyclerView.Adapter<CalendarEventAdap
         return dayEvents.size();
     }
 
+    public void setList(ArrayList<CalendarEvent> list) {
+        dayEvents = list;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView appointmentPatient;
         private TextView appointmentStartTime;

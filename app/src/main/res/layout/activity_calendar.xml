@@ -11,6 +11,7 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorOnItemsBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,6 +34,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolBar"/>
 
+
+    <TextView
+        android:id="@+id/no_appointments_text_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/no_appointments_on_selected_date"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/custom_calendar_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selected_day_appointments"

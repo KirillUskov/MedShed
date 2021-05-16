@@ -1,6 +1,7 @@
 package by.kirill.uskov.medsched.models;
 
 import android.net.Uri;
+import android.util.Log;
 
 public class CurrentUserModel {
 
@@ -37,6 +38,7 @@ public class CurrentUserModel {
 
     private void setCodeForFirebase() {
         codeForFirebase = userEmail.substring(0, userEmail.indexOf("@"));
+        Log.i("CurrentUserModel", codeForFirebase);
     }
 
     public String getCodeForFirebase() {
@@ -46,4 +48,5 @@ public class CurrentUserModel {
     public String getPhotoUri() {
         return photoUri;
     }
+
 }

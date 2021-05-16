@@ -4,6 +4,7 @@
 
     <!-- Patients -->
     <string name="patients_header">Пациенты</string>
+    <string name="no_patient_available">Список пациентов пуст</string>
 
     <!-- New patient -->
     <string name="p_new">Данные пациента</string>
@@ -14,14 +15,28 @@
 
     <!-- Today patients -->
     <string name="expiredAppointments">Прошедшие записи</string>
+    <string name="no_appointment_available">Записи на сегодня отсутствуют</string>
 
     <!-- Calendar -->
     <string name="calendar_header">Расписание на месяц</string>
     <string name="today_header">Расписание на сегодня</string>
+    <string name="no_appointments_on_selected_date">Записи отсутсвуют. Нажмите + чтобы создать запись.</string>
 
     <!-- Menu -->
     <string name="menu_stat">Статистика</string>
     <string name="menu_about_us">О нас</string>
     <string name="menu_procedure">Процедуры</string>
     <string name="menu_themes">Темная тема</string>
+    <string name="title_activity_view_appointment_data">ViewAppointmentDataActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_r_v">RVActivity</string>
+
+    <string name="no_procedures_available">Список процедур пуст</string>
 </resources>

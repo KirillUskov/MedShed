@@ -21,6 +21,7 @@ public class Event implements Serializable, Comparable<Event> {
     protected String startTime, endTime;
     protected double duration;
     protected String id;
+    private String phoneNumber;
 
     public Event() {
     }
@@ -44,6 +45,9 @@ public class Event implements Serializable, Comparable<Event> {
         setDuration();
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
     public String getPatient() {
         return patient;
@@ -77,6 +81,10 @@ public class Event implements Serializable, Comparable<Event> {
         return duration;
     }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -84,6 +92,11 @@ public class Event implements Serializable, Comparable<Event> {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setPatient(String patient) {
+        this.patient = patient;
+    }
+
 
     public void setDuration() {
         try {

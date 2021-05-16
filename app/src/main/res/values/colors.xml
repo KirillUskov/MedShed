@@ -8,17 +8,25 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="selected_day">#FF03DAC5</color>
+
     <color name="light_grey">#EAEAEA</color>
     <color name="light_grey_1">#F4F4F4</color>
+    <color name="light_grey_2">#F6F6F6</color>
+    <color name="light_grey_3">#E4E4E4</color>
+    <color name="light_grey_4">#F8F8F8</color>
+
     <color name="grey_200">#CDCDCD</color>
     <color name="grey_500">#939393</color>
     <color name="grey_700">#707070</color>
     <color name="grey_900">#4C4C4C</color>
     <color name="dark_grey">#333333</color>
+    <color name="dark_grey_1">#3C3C3C</color>
+    <color name="dark_grey_2">#2E2E2E</color>
 
-    <color name="light_green">#9966CF4D</color>
-    <color name="green_500">#41A829</color>
-    <color name="green_700">#1B650A</color>
+    <color name="light_green">#994DCFBC</color>
+    <color name="green_500">#29A895</color>
+    <color name="green_700">#0A6557</color>
 
     <color name="light_red">#99CF4D4D</color>
     <color name="red_200">#CD5858</color>
@@ -35,6 +43,6 @@
     <color name="winter">#44a1c1da</color>
     <color name="spring">#448da64b</color>
 
-    <color name="today">#41A829</color>
+    <color name="today">#29A88A</color>
     <color name="greyed_out">#c7c7c7</color>
 </resources>

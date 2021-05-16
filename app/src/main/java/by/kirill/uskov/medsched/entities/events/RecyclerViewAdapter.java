@@ -3,6 +3,7 @@ package by.kirill.uskov.medsched.entities.events;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -26,33 +27,42 @@ import by.kirill.uskov.medsched.R;
 import by.kirill.uskov.medsched.utils.ThemeUtil;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private Context context;
+    private static final String TAG = "RecyclerViewAdapter";
     private ArrayList<Event> events;
+    private Context context;
     private int position;
+    private OnEventListener onEventListener;
 
-    public RecyclerViewAdapter(Context context, ArrayList<Event> events) {
-        this.context = context;
+    public RecyclerViewAdapter(ArrayList<Event> events, OnEventListener onEventListener) {
         this.events = events;
+        Log.i("RecyclerViewAdapter", onEventListener.toString());
+        this.onEventListener = onEventListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.swipe_event_layout, parent, false);
-        return new ViewHolder(view);
+        context = parent.getContext();
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_event_layout, parent, false);
+        return new ViewHolder(view, onEventListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Event event = events.get(position);
-        holder.bind(event);
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                setPosition(holder.getPosition());
-                return false;
-            }
-        });
+        try {
+            Event event = events.get(position);
+            holder.bind(event);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.i("RV Adapter", "longClick");
+                    setPosition(holder.getPosition());
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override
@@ -73,20 +83,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.position = position;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView appointmentPatient;
         private TextView appointmentStartTime;
         private TextView appointmentEndTime;
         private TextView appointmentProcedure;
         private ImageView statusIcon;
 
-        public ViewHolder(@NonNull @NotNull View itemView) {
+        private OnEventListener onEventListener;
+
+        public ViewHolder(@NonNull @NotNull View itemView, OnEventListener onEventListener) {
             super(itemView);
             appointmentPatient = itemView.findViewById(R.id.patientName);
             appointmentStartTime = itemView.findViewById(R.id.startTime);
             appointmentEndTime = itemView.findViewById(R.id.endTime);
             appointmentProcedure = itemView.findViewById(R.id.event);
             statusIcon = itemView.findViewById(R.id.eventStatus);
+            this.onEventListener = onEventListener;
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i("PLS", "v click");
+                }
+            });
         }
 
 
@@ -123,15 +142,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     break;
             }
             String patientName = event.getPatient();
-            if (patientName.length() > 20) {
-                patientName = patientName.substring(0, 20) + "...";
+            if (patientName.length() > 18) {
+                patientName = patientName.substring(0, 17) + "...";
             }
             appointmentPatient.setText(patientName);
             appointmentProcedure.setText(event.getProcedure());
             appointmentStartTime.setText(event.getStartTime());
             appointmentEndTime.setText(event.getEndTime());
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            Log.i(TAG, "click");
+            onEventListener.onEventClick(getAdapterPosition(), v);
+        }
+    }
+    public interface OnEventListener {
+        void onEventClick(int position, View v);
     }
 
 }

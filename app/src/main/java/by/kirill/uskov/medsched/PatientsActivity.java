@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,9 +26,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 
 import by.kirill.uskov.medsched.customListeners.RecyclerTouchListener;
 import by.kirill.uskov.medsched.dialogs.AddPatientDialog;
+import by.kirill.uskov.medsched.entities.events.Event;
 import by.kirill.uskov.medsched.entities.patients.Patient;
 import by.kirill.uskov.medsched.entities.patients.SwipeRecyclerViewAdapter;
 import by.kirill.uskov.medsched.models.Application;
@@ -40,6 +43,7 @@ public class PatientsActivity extends AppCompatActivity {
 
     private DBUtils dbUtil;
     private DBUtils.DBPatient dbPatient;
+    private DBUtils.DBEvents dbEvents;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -47,7 +51,10 @@ public class PatientsActivity extends AppCompatActivity {
 
     private RecyclerView patientsRV;
 
+    private TextView emptyView;
+
     private ArrayList<Patient> patients;
+    private ArrayList<Event> appointments = new ArrayList<>();
     private Patient editedPatient;
 
     private SwipeRecyclerViewAdapter swipeAdapter;
@@ -67,6 +74,8 @@ public class PatientsActivity extends AppCompatActivity {
         patients = new ArrayList<>();
         try {
             dbPatient = dbUtil.getP();
+            dbEvents = dbUtil.getE();
+            dbEvents.setAll();
             patients = dbPatient.getList();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -78,6 +87,7 @@ public class PatientsActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         patientsRV.setHasFixedSize(false);
 
+        emptyView = findViewById(R.id.empty_view);
 
         swipeAdapter = new SwipeRecyclerViewAdapter(this, patients);
         patientsRV.setAdapter(swipeAdapter);
@@ -88,6 +98,17 @@ public class PatientsActivity extends AppCompatActivity {
 
         setButtons();
         setNavigation();
+    }
+
+    private void setRVVisibility() {
+
+        if (patients.size() == 0) {
+            patientsRV.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            patientsRV.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     private void setButtons() {
@@ -126,8 +147,7 @@ public class PatientsActivity extends AppCompatActivity {
                                 Patient patient = patients.get(position);
                                 Application.getInstance().setPatient(patient);
                                 startActivity(new Intent(getApplicationContext(), ViewPatientDataActivity.class));
-                                overridePendingTransition(0,0);
-                                finish();
+                                overridePendingTransition(0, 0);
                                 break;
                         }
                     }
@@ -135,18 +155,11 @@ public class PatientsActivity extends AppCompatActivity {
         patientsRV.addOnItemTouchListener(touchListener);
     }
 
-    /*private void getAllPatients() {
-        if(dbPatient.set()) {
-            patients = dbPatient.getList();
-            swipeAdapter.notifyDataSetChanged();
-        }
-    }*/
-
     private void getAllPatients() {
         try {
-            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Pat");
+            databaseReference = FirebaseDatabase.getInstance().getReference(dbUtil.getUserPatCode());
 
-            ValueEventListener vListener = new ValueEventListener() {
+            databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (patients.size() > 0) {
@@ -158,25 +171,30 @@ public class PatientsActivity extends AppCompatActivity {
                         patient.setId(ds.getKey());
                         patients.add(patient);
                         Collections.sort(patients);
-                        swipeAdapter.notifyDataSetChanged();
                     }
+                    swipeAdapter.notifyDataSetChanged();
+                    setRVVisibility();
+                    Log.i(TAG, "getAllPatients");
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-            };
-            databaseReference.addValueEventListener(vListener);
+            });
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
     private void removePatient(Patient patient) {
-        if(dbPatient.remove(patient)) {
+        appointments = dbEvents.getPatientEvents(patient.getName());
+        if (dbPatient.remove(patient)) {
             patients = dbPatient.getList();
             swipeAdapter.notifyDataSetChanged();
+            if (appointments.size() > 0) {
+                dbEvents.removeEventsList(appointments);
+            }
         }
     }
 
@@ -184,6 +202,12 @@ public class PatientsActivity extends AppCompatActivity {
         dbPatient.undo(patient);
         patients = dbPatient.getList();
         swipeAdapter.notifyDataSetChanged();
+    }
+
+    private void undoEventEditing(Patient patient) {
+        for (Event event : appointments) {
+            dbEvents.undo(event);
+        }
     }
 
     private void updatePatient(Patient patient) {
@@ -207,14 +231,12 @@ public class PatientsActivity extends AppCompatActivity {
                     case R.id.calendarSchedule:
                         startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
                         finish();
-                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.patientsActivity:
                         return true;
                     case R.id.currentDaySchedule:
                         startActivity(new Intent(getApplicationContext(), TodayActivity.class));
                         finish();
-                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;

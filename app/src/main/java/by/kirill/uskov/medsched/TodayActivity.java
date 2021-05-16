@@ -8,13 +8,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -23,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +47,7 @@ import by.kirill.uskov.medsched.utils.DBUtils;
 import by.kirill.uskov.medsched.utils.DateUtil;
 import by.kirill.uskov.medsched.utils.ThemeUtil;
 
-public class TodayActivity extends AppCompatActivity {
+public class TodayActivity extends AppCompatActivity implements RecyclerViewAdapter.OnEventListener {
 
     private int editedEventId = 0;
     private static final String TAG = "TodayActivity";
@@ -58,11 +64,79 @@ public class TodayActivity extends AppCompatActivity {
     private RecyclerView futureAppointmentsRV;
     private BottomNavigationView bottomNavigationView;
 
+    private TextView emptyView;
+
     private ArrayList<Event> appointments;
 
     private RecyclerViewAdapter swipeAdapter;
 
     private Event editedEvent;
+
+    private Handler setDateHandler = new Handler();
+
+    private Runnable setDateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setViewDate();
+
+            setDateHandler.postDelayed(this, 1000);
+        }
+    };
+
+
+    private PopupMenu.OnMenuItemClickListener completedMenuListener = new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            int id;
+            switch (item.getItemId()) {
+                case R.id.edit_appointment:
+                    id = swipeAdapter.getPosition();
+                    Application.getInstance().setEvent(appointments.get(id));
+                    startActivity(new Intent(getApplicationContext(), ViewAppointmentDataActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    break;
+                case R.id.delete_appointment:
+                    id = swipeAdapter.getPosition();
+                    removeEvent(appointments.get(id));
+                    appointments.remove(id);
+                    swipeAdapter.notifyDataSetChanged();
+                    break;
+            }
+            return false;
+        }
+    };
+
+    private PopupMenu.OnMenuItemClickListener futureMenuListener = new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            int id;
+            switch (item.getItemId()) {
+                case R.id.edit_appointment:
+                    id = swipeAdapter.getPosition();
+                    Application.getInstance().setEvent(appointments.get(id));
+                    startActivity(new Intent(getApplicationContext(), ViewAppointmentDataActivity.class));
+                    overridePendingTransition(R.anim.nav_default_pop_exit_anim, R.anim.nav_default_pop_enter_anim);
+                    finish();
+                    break;
+                case R.id.delete_appointment:
+                    id = swipeAdapter.getPosition();
+                    removeEvent(appointments.get(id));
+                    appointments.remove(id);
+                    swipeAdapter.notifyDataSetChanged();
+                    break;
+                case R.id.set_completed_appointment:
+                    id = swipeAdapter.getPosition();
+                    Event event = appointments.get(id);
+                    event.setStatus(AppointmentStatus.DO.toString());
+                    updateEvent(appointments.get(id));
+                    Collections.sort(appointments);
+                    swipeAdapter.notifyDataSetChanged();
+                    break;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +164,17 @@ public class TodayActivity extends AppCompatActivity {
             appointments = dbEvents.getList();
         }
 
-        swipeAdapter = new RecyclerViewAdapter(this, appointments);
+        swipeAdapter = new RecyclerViewAdapter(appointments, this);
         futureAppointmentsRV.setAdapter(swipeAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        futureAppointmentsRV.setHasFixedSize(false);
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         futureAppointmentsRV.setLayoutManager(layoutManager);
+
+        futureAppointmentsRV.setHasFixedSize(false);
+        futureAppointmentsRV.setEnabled(true);
+        futureAppointmentsRV.setClickable(true);
+
+        setAppointments();
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -103,23 +182,35 @@ public class TodayActivity extends AppCompatActivity {
         dayOfWeek = findViewById(R.id.dayOfWeek);
         month = findViewById(R.id.monthText);
 
-        setAppointments();
+        emptyView = findViewById(R.id.empty_view);
 
-        registerForContextMenu(futureAppointmentsRV);
-
-        futureAppointmentsRV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editedEventId = v.getId();
-            }
-        });
         setViewDate();
+
+        setDateHandler.postDelayed(setDateRunnable, 1000);
+
+        setNavState();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        setNavState();
+    protected void onResume() {
+        super.onResume();
+        setAppointments();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        setDateHandler.removeCallbacks(setDateRunnable);
+    }
+
+    private void setRVVisibility() {
+        if (appointments.size() == 0) {
+            futureAppointmentsRV.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        } else {
+            futureAppointmentsRV.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
     }
 
     private void setViewDate() {
@@ -139,7 +230,7 @@ public class TodayActivity extends AppCompatActivity {
 
     private void setAppointments() {
         try {
-            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+            databaseReference = FirebaseDatabase.getInstance().getReference(dbUtil.getUserSchedCode());
 
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -164,60 +255,22 @@ public class TodayActivity extends AppCompatActivity {
                         }
                     }
                     Collections.sort(appointments);
-
-                    //TEST
-                    swipeAdapter.setEvents(appointments);
-                    setAppointmentsAmount();
                     swipeAdapter.notifyDataSetChanged();
+                    setAppointmentsAmount();
+
+                    Log.i(TAG, "setAppointments");
+                    setRVVisibility();
+                    Application.getInstance().setTodayAppointments(appointments);
                 }
 
                 @Override
-                public void onCancelled(DatabaseError error) {
-                    Log.e(TAG, error.getMessage());
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
                 }
+
             });
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-        }
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(0, ContextMenuValue.EDIT, 0, ContextMenuValue.EDIT_TEXT);
-        menu.add(0,ContextMenuValue.VIEW, 0, ContextMenuValue.VIEW_TEXT);
-        menu.add(0, ContextMenuValue.DELETE, 0, ContextMenuValue.DELETE_TEXT);
-        switch (v.getId()) {
-            case R.id.todaySchedule:
-                menu.add(0, ContextMenuValue.PUSH_TO_EXPIRED, 0, ContextMenuValue.PUSH_TO_EXPIRED_TEXT);
-                break;
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int id;
-        switch (item.getItemId()){
-            case ContextMenuValue.EDIT:
-                /*
-                    Open edit appointment act
-                 */
-                return true;
-            case ContextMenuValue.VIEW:
-                //this.item = String.valueOf(item.getItemId());
-                //viewAppintmentInformantion();
-                return true;
-            case ContextMenuValue.DELETE:
-                id = swipeAdapter.getPosition();
-                removeEvent(appointments.get(id));
-                return true;
-            case ContextMenuValue.PUSH_TO_EXPIRED:
-                id = swipeAdapter.getPosition();
-                Event event = appointments.get(id);
-                event.setStatus(AppointmentStatus.DO.toString());
-                updateEvent(event);
-                return true;
-            default:
-                return false;
         }
     }
 
@@ -235,6 +288,7 @@ public class TodayActivity extends AppCompatActivity {
         dbEvents.undo(event);
         appointments = dbEvents.getList();
         Collections.sort(appointments);
+
         swipeAdapter.notifyDataSetChanged();
     }
 
@@ -250,7 +304,7 @@ public class TodayActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         undoAppointmentEditing(event);
-                        setAppointments();
+
                     }
                 })
                 .show();
@@ -258,9 +312,6 @@ public class TodayActivity extends AppCompatActivity {
 
     private void updateEvent(Event event) {
         dbEvents.update(event);
-        appointments = dbEvents.getList();
-        Collections.sort(appointments);
-        swipeAdapter.notifyDataSetChanged();
     }
 
     private void setNavState() {
@@ -272,13 +323,13 @@ public class TodayActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.calendarSchedule:
                         startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                        //overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         finish();
-                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.patientsActivity:
                         startActivity(new Intent(getApplicationContext(), PatientsActivity.class));
+                        //overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         finish();
-                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.currentDaySchedule:
                         return true;
@@ -291,7 +342,21 @@ public class TodayActivity extends AppCompatActivity {
 
     public void goToTheSettings(View view) {
         startActivity(new Intent(this, SettingsActivity.class));
-        overridePendingTransition(0,0);
         finish();
+    }
+
+    @Override
+    public void onEventClick(int position, View v) {
+        Log.i(TAG, "event click");
+        //Application.getInstance().setEvent(appointments.get(position));
+        PopupMenu menu = new PopupMenu(getApplicationContext(), v);
+        if (appointments.get(position).getStatus() == AppointmentStatus.DO) {
+            menu.getMenuInflater().inflate(R.menu.completed_menu, menu.getMenu());
+            menu.setOnMenuItemClickListener(completedMenuListener);
+        } else {
+            menu.getMenuInflater().inflate(R.menu.future_menu, menu.getMenu());
+            menu.setOnMenuItemClickListener(futureMenuListener);
+        }
+        menu.show();
     }
 }

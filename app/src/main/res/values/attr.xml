@@ -20,6 +20,10 @@
 
     <declare-styleable name="common">
         <attr name="colorOnDialogBackground" format="color"/>
+        <attr name="colorOnItemsBackground" format="color"/>
+        <attr name="inputColor" format="color"/>
+        <attr name="darkTextColor" format="color"/>
+        <attr name="lightTextColor" format="color"/>
     </declare-styleable>
 
 </resources>

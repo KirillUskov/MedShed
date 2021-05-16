@@ -63,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = auth.getCurrentUser();
+        if(currentUser!=null) {
+            Log.i("SPLASH", currentUser.getDisplayName());
+        }
     }
 
     private void createRequest() {

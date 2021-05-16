@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorOnBackground">
+    android:background="?attr/colorOnItemsBackground"
+    android:layout_marginBottom="5dp">
 
     <!-- date toolbar -->
     <RelativeLayout
@@ -112,5 +113,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="7"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorOnDialogBackground"/>
 
 </LinearLayout>

@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Theme.MedSched" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/green_500</item>
         <item name="colorPrimaryVariant">@color/grey_200</item>
@@ -6,6 +7,12 @@
 
         <item name="colorOnBackground">@color/light_grey_1</item>
         <item name="colorOnDialogBackground">@color/light_grey</item>
+        <item name="colorOnItemsBackground">@color/light_grey_2</item>
+        <item name="strokeColor">@color/light_grey_3</item>
+        <item name="inputColor">@color/white</item>
+
+        <item name="darkTextColor">@color/light_grey</item>
+        <item name="lightTextColor">@color/dark_grey</item>
 
         <item name="mainTextColor">@color/dark_grey</item>
         <item name="secondTextColor">@color/grey_700</item>
@@ -21,6 +28,16 @@
         <item name="selectedColor">@color/green_500</item>
         <item name="unSelectedColor">?attr/secondTextColor</item>
 
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorOnDialogBackground</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out</item>
+    </style>
+
+    <style name="Theme.MedSched.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>

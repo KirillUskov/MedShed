@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 import by.kirill.uskov.medsched.entities.events.Event;
 import by.kirill.uskov.medsched.enums.AppointmentStatus;
@@ -70,15 +71,9 @@ public class SplashActivity extends AppCompatActivity {
         ThemeUtil.getInstance().onActivityCreateSetTheme(this);
 
         setContentView(R.layout.activity_splash);
-
         exitFromSplash = false;
         if (openNextActivities()) {
         } else {
-            try {
-                Thread.sleep(500);
-            } catch (Exception e) {
-
-            }
             new AlertDialog.Builder(this)
                     .setTitle("Отсутствует подключение к сети")
                     .setMessage("Проверьте наличие подключения к сети!")
@@ -91,6 +86,12 @@ public class SplashActivity extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     private void setExitSplash(boolean state) {
@@ -110,14 +111,11 @@ public class SplashActivity extends AppCompatActivity {
                         .setUsername(user.getDisplayName())
                         .setUserEmail(user.getEmail())
                         .setPhotoUri(user.getPhotoUrl());
-                appointments = new ArrayList<>();
-                setAppointments();
-                Application.getInstance().setTodayAppointments(appointments);
                 startActivity(new Intent(getApplicationContext(), TodayActivity.class));
             } else {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
-            overridePendingTransition(0, 0);
+            finish();
             return true;
         }
         return false;
@@ -126,43 +124,6 @@ public class SplashActivity extends AppCompatActivity {
     private boolean isUserLoggedIn() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         return user != null;
-    }
-
-    private void setAppointments() {
-        try {
-            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
-
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (appointments.size() > 0) {
-                        appointments.clear();
-                    }
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        Event event = ds.getValue(Event.class);
-                        event.setId(ds.getKey());
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-                        Date date = new Date(System.currentTimeMillis());
-
-                        if (event.getDate().replaceAll(" ", "").contains(formatter.format(date))) {
-                            // If today appointment has "MOVE" status (it was moved on today), we set status "NO"
-                            if (event.getStatus() == AppointmentStatus.MOVE) {
-                                event.setStatus(AppointmentStatus.NO.toString());
-                            }
-                            appointments.add(event);
-                        }
-                    }
-                    Collections.sort(appointments);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    Log.e(TAG, error.getMessage());
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
     }
 
     private boolean isNetworkConnected() {

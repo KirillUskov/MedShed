@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -38,11 +39,14 @@ import by.kirill.uskov.medsched.enums.AppointmentStatus;
 import by.kirill.uskov.medsched.models.Application;
 import by.kirill.uskov.medsched.models.CalendarEvent;
 import by.kirill.uskov.medsched.models.CurrentUserModel;
+import by.kirill.uskov.medsched.utils.DBUtils;
 import by.kirill.uskov.medsched.utils.DateUtil;
 
 public class CustomCalendarView extends LinearLayout {
     private static final String TAG = "CustomCalendarView";
     private static final int MAX_DAYS = 42;
+
+    private DBUtils dbUtil;
 
     private DatabaseReference databaseReference;
 
@@ -72,12 +76,6 @@ public class CustomCalendarView extends LinearLayout {
 
     private FragmentManager fragmentManager;
 
-    private Runnable eventUpdaterRunnable = new Runnable() {
-        public void run() {
-            setAppointmentsToMonth();
-            mHandler.postDelayed(this, 200);
-        }
-    };
 
     public CustomCalendarView(Context context) {
         super(context);
@@ -91,6 +89,7 @@ public class CustomCalendarView extends LinearLayout {
         super(context, attrs);
         this.context = context;
         initialLayout();
+        dbUtil = new DBUtils();
         setUpCalendar();
 
         previousButton.setOnClickListener(new OnClickListener() {
@@ -125,7 +124,7 @@ public class CustomCalendarView extends LinearLayout {
             }
         });
 
-        calendar.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        /*calendar.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 date = formatter.format(dates.get(position));
@@ -135,7 +134,7 @@ public class CustomCalendarView extends LinearLayout {
                 dialog.show(fragmentManager, "Добавить запись");
                 return false;
             }
-        });
+        });*/
     }
 
     public CustomCalendarView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -181,7 +180,7 @@ public class CustomCalendarView extends LinearLayout {
             }
         }
 
-        mHandler.postDelayed(eventUpdaterRunnable, 1000);
+        setAppointmentsToMonth();
 
         gridAdapter = new CalendarGridAdapter(context, dates, c, appointments);
         calendar.setAdapter(gridAdapter);
@@ -190,7 +189,7 @@ public class CustomCalendarView extends LinearLayout {
 
     private void setAppointmentsToMonth() {
         try {
-            databaseReference = FirebaseDatabase.getInstance().getReference(CurrentUserModel.getInstance().getCodeForFirebase() + "@Sched");
+            databaseReference = FirebaseDatabase.getInstance().getReference(dbUtil.getUserSchedCode());
 
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -228,10 +227,8 @@ public class CustomCalendarView extends LinearLayout {
     @Override
     public void onFinishTemporaryDetach() {
         super.onFinishTemporaryDetach();
-        mHandler.removeCallbacks(eventUpdaterRunnable);
     }
 
     public void kill() {
-        mHandler.removeCallbacks(eventUpdaterRunnable);
     }
 }

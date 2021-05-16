@@ -56,14 +56,14 @@ public class Patient implements Serializable, Comparable<Patient> {
     public int compareTo(Patient o) {
         int length = o.getName().length() < getName().length() ? o.getName().length() : getName().length();
         for (int i = 0; i < length - 1; i++) {
-            Log.i("Names", o.getName() + " - " + getName());
+            //Log.i("Names", o.getName() + " - " + getName());
             int char1 = (int) o.getName().charAt(i);
             int char2 = (int) getName().charAt(i);
             if (char1 > char2) {
-                Log.i("CHAR1", char1 + " - " + char2);
+                //Log.i("CHAR1", char1 + " - " + char2);
                 return -1;
             } else if (char1 < char2)  {
-                Log.i("CHAR2", char1 + " - " + char2);
+                //Log.i("CHAR2", char1 + " - " + char2);
                 return 1;
             } else {
                 continue;

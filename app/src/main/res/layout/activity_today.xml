@@ -11,10 +11,12 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?colorOnItemsBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -48,9 +50,8 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolBar"
-        android:background="?attr/selectedColor"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@id/toolBar">
+        <!--android:background="?attr/selectedColor"-->
 
         <TextView
             android:id="@+id/dayOfMonth"
@@ -58,8 +59,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:text="30"
-            android:textColor="@color/light_grey"
+            android:textColor="?selectedColor"
             android:textSize="60sp"
+            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,7 +74,8 @@
             android:layout_marginStart="5dp"
             android:layout_marginBottom="15dp"
             android:text="ПН"
-            android:textColor="@color/light_grey"
+            android:textColor="?selectedColor"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/dayOfMonth" />
 
@@ -83,7 +86,8 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="15dp"
             android:text="ЯНВАРЬ"
-            android:textColor="@color/light_grey"
+            android:textColor="?selectedColor"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/dayOfWeek"
             app:layout_constraintStart_toEndOf="@+id/dayOfMonth"
             app:layout_constraintTop_toTopOf="parent"
@@ -96,7 +100,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             android:gravity="right"
-            android:textColor="@color/light_grey"
+            android:textColor="?secondTextColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -110,6 +114,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:text="@string/no_appointment_available" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

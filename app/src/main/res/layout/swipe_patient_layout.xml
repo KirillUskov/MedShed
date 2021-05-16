@@ -75,7 +75,7 @@
         android:id="@+id/rowFG"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="?attr/colorOnBackground"
+        android:background="?attr/colorOnItemsBackground"
         android:clickable="true"
         android:focusable="true"
         android:orientation="horizontal"

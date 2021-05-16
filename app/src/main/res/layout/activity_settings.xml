@@ -11,7 +11,7 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorOnBackground"
+        android:background="?attr/colorOnItemsBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,30 +20,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
+                android:gravity="center"
                 android:text="Настройки"
                 android:textColor="?attr/toolbarTextColor"
                 android:textSize="18sp"
-                android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:layout_width="22dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="?attr/colorOnItemsBackground"
                 android:onClick="backToTodayAppointments"
-                android:background="?attr/colorOnBackground"/>
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -73,7 +71,7 @@
                     android:id="@+id/user_avatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/man_head" />
+                    android:src="@drawable/ic_baseline_people" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -101,6 +99,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/procedures_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -116,6 +115,7 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/procedure_list_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Осмотр, Удаление зуба"
@@ -144,20 +144,46 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:text="О нас"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:text="Статистика за текущий месяц"
+                android:textColor="?attr/secondTextColor"
+                android:textSize="12sp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/appointments_stat_chart"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:background="?colorOnItemsBackground"
+                android:layout_height="300dp"/>
+
         </LinearLayout>
+
     </ScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_margin="30dp"
-        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/bg_custom_grey_button"
+        android:onClick="logout"
         android:text="Выйти"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:onClick="logout"/>
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
